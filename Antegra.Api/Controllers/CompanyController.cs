@@ -150,17 +150,19 @@ namespace Labote.Api.Controllers
                 x.Id,
                 Report = x.Documents.Where(y => y.DocumentType == Core.Constants.Enums.DocumentType.report).Select(y => new
                 {
+                    y.Name,
                     y.Description,
-                    y.ExpireDate,
-                    y.DocumentDate,
+                    ExpireDate=y.ExpireDate.ToString("dd/MM/yyyy"),
+                    DocumentDate=y.DocumentDate.ToString("dd/MM/yyy"),
                     DocumentFiles=y.DocumentFiles.Select(z => new {z.Url,z.Name}),
                     y.DocumentNo
                 }),
                 Certifica = x.Documents.Where(y => y.DocumentType == Core.Constants.Enums.DocumentType.report).Select(y => new
                 {
+                    y.Name,
                     y.Description,
-                    y.ExpireDate,
-                    y.DocumentDate,
+                    ExpireDate = y.ExpireDate.ToString("dd/MM/yyyy"),
+                    DocumentDate = y.DocumentDate.ToString("dd/MM/yyy"),
                     DocumentFiles = y.DocumentFiles.Select(z => new { z.Url, z.Name }),
                     y.DocumentNo
                 }),
