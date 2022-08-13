@@ -12,8 +12,6 @@ namespace Labote.Api.Controllers.LaboteController
     [Authorize]
     public class LaboteControllerBase : ControllerBase
     {
-
-
         public BaseResponseModel PageResponse { get; set; } = new BaseResponseModel();
     }
 }

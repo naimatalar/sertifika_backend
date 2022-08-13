@@ -30,6 +30,12 @@ namespace Labote.Core
 
         public DbSet<MenuModule> MenuModules { get; set; }
         public DbSet<UserMenuModule> UserMenuModules { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentFile> DocumentFiles { get; set; }
+        public DbSet<Person> Persons { get; set; }
+        public DbSet<UserAddress> UserAddresses { get; set; }
+        public DbSet<Product> Products { get; set; }
 
       
    
