@@ -23,7 +23,17 @@ namespace Labote.Core.Constants
             [Display(Description = "Gün")]
             Day = 3,
         }
-     public enum DocumentType
+
+        public enum DocumnetKind
+        {
+            [Display(Description = "Kişi")]
+            Person = 1,
+            [Display(Description = "Firma")]
+            Company = 2,
+            [Display(Description = "Ürün")]
+            Product = 3,
+        }
+        public enum DocumentType
         {
             [Display(Description = "Rapor")]
             report = 1,

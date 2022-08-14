@@ -13,6 +13,7 @@ namespace Labote.Core.Entities
         public string Type { get; set; }
         public DateTime ExpireDate { get; set; }
         public DateTime DocumentDate { get; set; }
+        public Enums.DocumnetKind DocumnetKind { get; set; }
         public Enums.DocumentType  DocumentType { get; set; }
         public bool Statu { get; set; }
         public Product Product { get; set; }
