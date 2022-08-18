@@ -235,10 +235,10 @@ namespace Labote.Core
             var Tanimlamalar = new MenuModule
             {
                 IconName = "fas fa-cogs",
-                PageName = "Tanımlamalar",
+                PageName = "Sertifika & Rapor",
                 OrderNumber = 1,
                 IsMainPage = true,
-                PageUrl = "tanimlamalar"
+                PageUrl = "sertifika-rapor"
             };
             using (LaboteContext context = new LaboteContext())
             {
@@ -273,6 +273,48 @@ namespace Labote.Core
                     transaction.Commit();
                 }
             }
+
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Ürün Tanımları"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Ürün Tanımları",
+                            PageUrl = "urun-tanimlari",
+                            ParentId = Tanimlamalar.Id,
+                            OrderNumber = 2,
+                        });
+                    }
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Kişi Tanımları"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Kişi Tanımları",
+                            PageUrl = "kisi-tanimlari",
+                            ParentId = Tanimlamalar.Id,
+                            OrderNumber = 3,
+                        });
+                    }
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+
+
             #endregion
 
 

@@ -2,12 +2,14 @@
 using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
 using Labote.Core.Constants;
+using Labote.Core.Entities;
 using Labote.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -143,6 +145,34 @@ namespace Labote.Api.Controllers
             return PageResponse;
         }
 
+
+        [HttpPost("UploadFile")]
+        public async Task<dynamic> UploadFile(FileUploadControllerModel model)
+        {
+            var df = new DocumentFile
+            {
+                Name = model.FileName,
+                Url = model.FileName,
+                Type = Path.GetExtension(model.FileName),
+                DocumentId = model.Id
+            };
+
+            _context.DocumentFiles.Add(df);
+            _context.SaveChanges();
+            return PageResponse;
+        }
+
+        [HttpPost("FileDelete")]
+
+        public async Task<dynamic> FileDelete(FileUploadControllerModel model)
+        {
+
+            var dd = _context.DocumentFiles.Where(x => x.Id == model.Id).FirstOrDefault();
+            FileUploadService.Delete(dd.Url, _hostingEnvironment);
+           _context.Remove(dd);
+            _context.SaveChanges();
+            return PageResponse;
+        }
 
     }
 }

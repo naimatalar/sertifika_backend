@@ -18,14 +18,14 @@ namespace Labote.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class CompanyController : LaboteControllerBase
+    public class PersonController : LaboteControllerBase
     {
-        private const string pageName = "firma-tanimlari";
+        private const string pageName = "kisi-tanimlari";
         private readonly LaboteContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
 
 
-        public CompanyController(LaboteContext context, IHostingEnvironment hostingEnvironment)
+        public PersonController(LaboteContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
@@ -34,19 +34,18 @@ namespace Labote.Api.Controllers
 
         [HttpPost("Create")]
         [PermissionCheck(Action = pageName)]
-        public async Task<dynamic> Create(CreateEditCompanyRequestModel model)
+        public async Task<dynamic> Create(CreateEditPersonRequestModel model)
         {
-            var md = new Core.Entities.Company
+            var md = new Core.Entities.Person
             {
-                Address = model.Address,
+                
                 Description = model.Description,
-                Phone = model.Phone,
-                Email = model.Email,
-                LogoUrl = model.LogoUrl,
-                Name = model.Name,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Title = model.Title,
 
             };
-            _context.Companies.Add(md);
+            _context.Persons.Add(md);
             _context.SaveChanges();
             PageResponse.Data = md;
             return PageResponse;
@@ -58,7 +57,7 @@ namespace Labote.Api.Controllers
         public async Task<dynamic> UploadFile(FileUploadControllerModel model)
         {
 
-            var dd = _context.Companies.Where(x => x.Id == model.Id).FirstOrDefault();
+            var dd = _context.Persons.Where(x => x.Id == model.Id).FirstOrDefault();
             if (!string.IsNullOrEmpty(dd.LogoUrl))
             {
                 FileUploadService.Delete(dd.LogoUrl, _hostingEnvironment);
@@ -74,7 +73,7 @@ namespace Labote.Api.Controllers
         public async Task<dynamic> FileDelete(FileUploadControllerModel model)
         {
 
-            var dd = _context.Companies.Where(x => x.Id == model.Id).FirstOrDefault();
+            var dd = _context.Persons.Where(x => x.Id == model.Id).FirstOrDefault();
             if (!string.IsNullOrEmpty(dd.LogoUrl))
             {
                 FileUploadService.Delete(dd.LogoUrl, _hostingEnvironment);
@@ -88,14 +87,14 @@ namespace Labote.Api.Controllers
 
         [HttpPost("Edit")]
         [PermissionCheck(Action = pageName)]
-        public async Task<dynamic> Edit(CreateEditCompanyRequestModel model)
+        public async Task<dynamic> Edit(CreateEditPersonRequestModel model)
         {
-            var dd = _context.Companies.Where(x => x.Id == model.Id).FirstOrDefault();
-            dd.Phone = model.Phone; ;
-            dd.Address = model.Address;
+            var dd = _context.Persons.Where(x => x.Id == model.Id).FirstOrDefault();
             dd.Description = model.Description;
-            dd.Email = model.Email;
-            dd.Name = model.Name;
+            dd.Title = model.Title;
+            dd.LogoUrl = model.LogoUrl;
+            dd.FirstName = model.FirstName;
+            dd.LastName = model.LastName;
 
             _context.Update(dd);
             _context.SaveChanges();
@@ -106,15 +105,15 @@ namespace Labote.Api.Controllers
         [HttpPost("GetAll")]
         public async Task<dynamic> GetAll(BasePaginationRequestModel model)
         {
-            var data = _context.Companies.Select(x => new
+            var data = _context.Persons.Select(x => new
             {
-                x.Name,
-                x.Phone,
+                x.FirstName,
+                x.LastName,
                 x.Description,
-                x.Address,
+              x.Title,
                 Report = x.Documents.Where(x => x.DocumentType == Core.Constants.Enums.DocumentType.report).Count(),
                 Certifica = x.Documents.Where(x => x.DocumentType == Core.Constants.Enums.DocumentType.Certifica).Count(),
-                x.Email,
+               
                 x.Id,
                 x.LogoUrl,
             });
@@ -125,13 +124,13 @@ namespace Labote.Api.Controllers
         [HttpGet("getById/{id}")]
         public async Task<dynamic> getById(Guid id)
         {
-            var data = _context.Companies.Where(x => x.Id == id).Select(x => new
+            var data = _context.Persons.Where(x => x.Id == id).Select(x => new
             {
-                x.Name,
-                x.Phone,
+                x.FirstName,
+                x.LastName,
+                x.Title,
+                
                 x.Description,
-                x.Address,
-                x.Email,
                 x.Id,
                 x.LogoUrl,
             }).FirstOrDefault();
@@ -141,13 +140,12 @@ namespace Labote.Api.Controllers
         [HttpGet("getDetailById/{id}")]
         public async Task<dynamic> getDetailById(Guid id)
         {
-            var data = _context.Companies.Where(x => x.Id == id).Select(x => new
+            var data = _context.Persons.Where(x => x.Id == id).Select(x => new
             {
-                x.Name,
-                x.Phone,
+                x.FirstName,
+                x.LastName,
                 x.Description,
-                x.Address,
-                x.Email,
+                x.Title,
                 x.Id,
                 Report = x.Documents.Where(y => y.DocumentType == Core.Constants.Enums.DocumentType.report).Select(y => new
                 {
@@ -183,18 +181,16 @@ namespace Labote.Api.Controllers
         [HttpGet("delete/{id}")]
         public async Task<dynamic> delete(Guid id)
         {
-            var data = _context.Companies.Include(x=>x.Documents).ThenInclude(x=>x.DocumentFiles).Where(x => x.Id == id).FirstOrDefault();
+            var data = _context.Persons.Include(x => x.Documents).ThenInclude(x => x.DocumentFiles).Where(x => x.Id == id).FirstOrDefault();
             if (!string.IsNullOrEmpty(data.LogoUrl))
             {
                 FileUploadService.Delete(data.LogoUrl, _hostingEnvironment);
             }
             //var documnets = _context.Documents.Where(x => x.CompanyId == data.Id);
             _context.Documents.RemoveRange(data.Documents.ToList());
-            _context.Companies.Remove(data);
-           
-                _context.SaveChanges();
-           
+            _context.Persons.Remove(data);
 
+            _context.SaveChanges();
             return PageResponse;
         }
 
