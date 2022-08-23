@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -90,15 +91,23 @@ namespace Labote.Api.Controllers
         [AllowAnonymous]
         public async Task<dynamic> GetAll(BasePaginationRequestModel model)
         {
-            var modelData=model.Data as GetDocumentByDate;
+            var modelData=  JsonConvert.DeserializeObject<GetDocumentByDate>(model.Data.ToString());
 
-            var data = _context.Documents.Where(x => x.DocumentDate > modelData.startDate && x.DocumentDate< modelData.endDate).CreatePagination(model);
-            foreach (var item in data.DocumentFiles)
-            {
-                FileUploadService.Delete(item.Url, _hostingEnvironment);
-            }
-            _context.Documents.Remove(data);
-            _context.SaveChanges();
+            var data = _context.Documents.Where(x => x.DocumentDate > modelData.startDate && x.DocumentDate< modelData.endDate)
+                .Select(x=>new { 
+                    x.DocumentType,
+                    DocumentTypeString=x.DocumentType.GetDisiplayDescription(),
+                    x.DocumnetKind,
+                    DocumentKindText=x.DocumnetKind.GetDisiplayDescription(),
+                    x.Id,
+                    x.Name,
+                    CompanyName=x.Company.Name,
+                    PersonName=x.Person.FirstName + " "+x.Person.LastName,
+                    ProductName=x.Product.Name,
+                    DocumentDate=x.DocumentDate.ToString("dd/MM/yyyy"),
+                    EndDate=x.ExpireDate.ToString("dd/MM/yyyy")
+            }).CreatePagination(model);
+            PageResponse.Data = data;
             return PageResponse;
         }
         [HttpPost("GetByObjectId")]

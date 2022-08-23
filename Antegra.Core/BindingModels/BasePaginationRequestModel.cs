@@ -10,7 +10,7 @@ namespace Labote.Core.BindingModels
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public  dynamic Data { get; set; } = null;
+        public  object Data { get; set; } = null;
 
     }
 }
