@@ -1,9 +1,11 @@
 ﻿using Labote.Api.BindingModel.RequestModel;
 using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
+using Labote.Core.BindingModels;
 using Labote.Core.Constants;
 using Labote.Core.Entities;
 using Labote.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -84,7 +86,21 @@ namespace Labote.Api.Controllers
             _context.SaveChanges();
             return PageResponse;
         }
+        [HttpPost("GetAll")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetAll(BasePaginationRequestModel model)
+        {
+            var modelData=model.Data as GetDocumentByDate;
 
+            var data = _context.Documents.Where(x => x.DocumentDate > modelData.startDate && x.DocumentDate< modelData.endDate).CreatePagination(model);
+            foreach (var item in data.DocumentFiles)
+            {
+                FileUploadService.Delete(item.Url, _hostingEnvironment);
+            }
+            _context.Documents.Remove(data);
+            _context.SaveChanges();
+            return PageResponse;
+        }
         [HttpPost("GetByObjectId")]
         public async Task<dynamic> GetByObjectId(DocumentGetByObjectId model)
         {
