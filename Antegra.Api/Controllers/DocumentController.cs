@@ -89,11 +89,11 @@ namespace Labote.Api.Controllers
         }
         [HttpPost("GetAll")]
         [AllowAnonymous]
-        public async Task<dynamic> GetAll(BasePaginationRequestModel model)
+        public async Task<dynamic> GetAll(GetAllDocumentRequestModel model)
         {
-            var modelData=  JsonConvert.DeserializeObject<GetDocumentByDate>(model.Data.ToString());
+          
 
-            var data = _context.Documents.Where(x => x.DocumentDate > modelData.startDate && x.DocumentDate< modelData.endDate)
+            var data = _context.Documents.Where(x => x.DocumentDate > model.StartDate && x.DocumentDate< model.EndDate)
                 .Select(x=>new { 
                     x.DocumentType,
                     DocumentTypeString=x.DocumentType.GetDisiplayDescription(),
