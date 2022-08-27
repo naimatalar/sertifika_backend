@@ -11,7 +11,8 @@ namespace Labote.Core.Entities
         public string Description { get; set; }
         public string LogoUrl { get; set; }
         public string CompanyName { get; set; }
-  
+        public string Barcode { get; set; }
+
         public virtual ICollection<Document> Documents { get; set; }
 
     }

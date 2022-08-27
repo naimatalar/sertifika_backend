@@ -91,22 +91,23 @@ namespace Labote.Api.Controllers
         [AllowAnonymous]
         public async Task<dynamic> GetAll(GetAllDocumentRequestModel model)
         {
-          
 
-            var data = _context.Documents.Where(x => x.DocumentDate > model.StartDate && x.DocumentDate< model.EndDate)
-                .Select(x=>new { 
+
+            var data = _context.Documents.Where(x => x.DocumentDate > model.StartDate && x.DocumentDate < model.EndDate)
+                .Select(x => new
+                {
                     x.DocumentType,
-                    DocumentTypeString=x.DocumentType.GetDisiplayDescription(),
+                    DocumentTypeString = x.DocumentType.GetDisiplayDescription(),
                     x.DocumnetKind,
-                    DocumentKindText=x.DocumnetKind.GetDisiplayDescription(),
+                    DocumentKindText = x.DocumnetKind.GetDisiplayDescription(),
                     x.Id,
                     x.Name,
-                    CompanyName=x.Company.Name,
-                    PersonName=x.Person.FirstName + " "+x.Person.LastName,
-                    ProductName=x.Product.Name,
-                    DocumentDate=x.DocumentDate.ToString("dd/MM/yyyy"),
-                    EndDate=x.ExpireDate.ToString("dd/MM/yyyy")
-            }).CreatePagination(model);
+                    CompanyName = x.Company.Name,
+                    PersonName = x.Person.FirstName + " " + x.Person.LastName,
+                    ProductName = x.Product.Name,
+                    DocumentDate = x.DocumentDate.ToString("dd/MM/yyyy"),
+                    EndDate = x.ExpireDate.ToString("dd/MM/yyyy")
+                }).CreatePagination(model);
             PageResponse.Data = data;
             return PageResponse;
         }
@@ -169,6 +170,60 @@ namespace Labote.Api.Controllers
             }
             return PageResponse;
         }
+        [HttpGet("GetByObjectIdMobil/{id}")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetByObjectIdMobil(Guid id)
+        {
+            
+                var data = _context.Documents.Where(x => x.Id == id).Select(x => new
+                {
+                    x.CompanyId,
+                    x.PersonId,
+                    x.ProductId,
+                    x.Description,
+                    x.DocumentDate,
+                    x.DocumentNo,
+                    x.DocumentType,
+                    x.DocumnetKind,
+                    x.ExpireDate,
+                    x.Name,
+                    DocumentFiles=x.DocumentFiles.Select(x=>new { 
+                    x.Url,
+                    Extension= Path.GetExtension(x.Url)
+                    }),
+                    Company = new
+                    {
+                        x.Company.Address,
+                        x.Company.Description,
+                        x.Company.Email,
+                        x.Company.LogoUrl,
+                        x.Company.Name,
+                        x.Company.Phone,
+                    },
+                    Product = new
+                    {
+                        x.Product.Name,
+                        x.Product.Description,
+                        x.Product.CompanyName,
+                        x.Product.LogoUrl,
+
+                    },
+                    Person = new
+                    {
+                        x.Person.FirstName,
+                        x.Person.Description,
+                        x.Person.LastName,
+                        x.Person.LogoUrl,
+                        x.Person.Title,
+
+                    },
+                    Statu = true,
+                }).FirstOrDefault();
+                PageResponse.Data = data;
+            
+         
+            return PageResponse;
+        }
 
 
         [HttpPost("UploadFile")]
@@ -194,7 +249,7 @@ namespace Labote.Api.Controllers
 
             var dd = _context.DocumentFiles.Where(x => x.Id == model.Id).FirstOrDefault();
             FileUploadService.Delete(dd.Url, _hostingEnvironment);
-           _context.Remove(dd);
+            _context.Remove(dd);
             _context.SaveChanges();
             return PageResponse;
         }
