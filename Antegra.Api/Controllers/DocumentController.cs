@@ -181,15 +181,16 @@ namespace Labote.Api.Controllers
                     x.PersonId,
                     x.ProductId,
                     x.Description,
-                    x.DocumentDate,
+                    DocumentDate=x.DocumentDate.ToString("dd/MM/yyyy"),
                     x.DocumentNo,
                     x.DocumentType,
                     x.DocumnetKind,
-                    x.ExpireDate,
+                    ExpireDate=x.ExpireDate.ToString("dd/MM/yyyy"),
                     x.Name,
                     DocumentFiles=x.DocumentFiles.Select(x=>new { 
                     x.Url,
-                    Extension= Path.GetExtension(x.Url)
+                    Extension= Path.GetExtension(x.Url),
+                    Size= new FileInfo(_hostingEnvironment.ContentRootPath + "/wwwroot/Upload/" + x.Url).Length/1024,
                     }),
                     Company = new
                     {
