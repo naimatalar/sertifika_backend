@@ -170,6 +170,9 @@ namespace Labote.Api.Controllers
             }
             return PageResponse;
         }
+
+    
+
         [HttpGet("GetByObjectIdMobil/{id}")]
         [AllowAnonymous]
         public async Task<dynamic> GetByObjectIdMobil(Guid id)
@@ -200,6 +203,7 @@ namespace Labote.Api.Controllers
                         x.Company.LogoUrl,
                         x.Company.Name,
                         x.Company.Phone,
+                        Id=x.CompanyId,
                     },
                     Product = new
                     {
@@ -207,6 +211,7 @@ namespace Labote.Api.Controllers
                         x.Product.Description,
                         x.Product.CompanyName,
                         x.Product.LogoUrl,
+                        Id=x.ProductId
 
                     },
                     Person = new
@@ -216,7 +221,7 @@ namespace Labote.Api.Controllers
                         x.Person.LastName,
                         x.Person.LogoUrl,
                         x.Person.Title,
-
+                        Id=x.PersonId
                     },
                     Statu = true,
                 }).FirstOrDefault();
