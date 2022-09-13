@@ -143,7 +143,41 @@ namespace Labote.Api.Controllers
             return PageResponse;
         }
 
-            [HttpGet("getDetailById/{id}")]
+        [HttpPost("Search")]
+        [AllowAnonymous]
+        public async Task<dynamic> Search(GetByName model)
+        {
+            var data = _context.Products.Where(x => x.Name.Contains(model.Name)).Select(x => new
+
+            {
+                x.Id,
+                x.Description,
+                x.CompanyName,
+                x.LogoUrl,
+               
+                Name = x.Name,
+            }).CreatePagination(model);
+            PageResponse.Data = data;
+            return PageResponse;
+        } 
+        [HttpPost("GetAllMobil")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetAllMobil(BasePaginationRequestModel model)
+        {
+            var data = _context.Products.Select(x => new
+            {
+                x.Id,
+                x.Description,
+                x.CompanyName,
+                x.LogoUrl,
+                Name = x.Name,
+
+            }).CreatePagination(model);
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+
+        [HttpGet("getDetailById/{id}")]
         public async Task<dynamic> getDetailById(Guid id)
         {
             var data = _context.Products.Where(x => x.Id == id).Select(x => new

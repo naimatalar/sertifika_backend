@@ -8,6 +8,7 @@ using Labote.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System;
@@ -75,10 +76,10 @@ namespace Labote.Api.Controllers
             return PageResponse;
         }
 
-        [HttpPost("Delete")]
+        [HttpGet("Delete/{id}")]
         public async Task<dynamic> delete(Guid Id)
         {
-            var data = _context.Documents.Where(x => x.Id == Id).FirstOrDefault();
+            var data = _context.Documents.Include(x=>x.DocumentFiles).Where(x => x.Id == Id).FirstOrDefault();
             foreach (var item in data.DocumentFiles)
             {
                 FileUploadService.Delete(item.Url, _hostingEnvironment);
