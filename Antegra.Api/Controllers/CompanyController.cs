@@ -183,7 +183,7 @@ namespace Labote.Api.Controllers
         [HttpGet("delete/{id}")]
         public async Task<dynamic> delete(Guid id)
         {
-            var data = _context.Companies.Include(x=>x.Documents).ThenInclude(x=>x.DocumentFiles).Where(x => x.Id == id).FirstOrDefault();
+            var data = _context.Companies.Include(x => x.Documents).ThenInclude(x => x.DocumentFiles).Where(x => x.Id == id).FirstOrDefault();
             if (!string.IsNullOrEmpty(data.LogoUrl))
             {
                 FileUploadService.Delete(data.LogoUrl, _hostingEnvironment);
@@ -191,10 +191,42 @@ namespace Labote.Api.Controllers
             //var documnets = _context.Documents.Where(x => x.CompanyId == data.Id);
             _context.Documents.RemoveRange(data.Documents.ToList());
             _context.Companies.Remove(data);
-           
-                _context.SaveChanges();
-           
 
+            _context.SaveChanges();
+            return PageResponse;
+        }
+        [HttpPost("Search")]
+        [AllowAnonymous]
+        public async Task<dynamic> Search(GetByName model)
+        {
+            var data = _context.Companies.Where(x => x.Name.Contains(model.Name)).Select(x=>new
+            {
+                x.Id,
+                x.Address,
+                x.Description,
+                x.Email,
+                x.LogoUrl,
+                x.Name,
+                x.Phone,
+            }).CreatePagination(model);
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+        [HttpPost("GetAllMobil")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetAllMobil(BasePaginationRequestModel model)
+        {
+            var data = _context.Companies.Select(x => new
+            {
+                x.Id,
+                x.Address,
+                x.Description,
+                x.Email,
+                x.LogoUrl,
+                x.Name,
+                x.Phone,
+            }).CreatePagination(model);
+            PageResponse.Data = data;
             return PageResponse;
         }
 

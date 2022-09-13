@@ -111,6 +111,30 @@ namespace Labote.Api.Controllers
             PageResponse.Data = data;
             return PageResponse;
         }
+        [HttpPost("GetAllFull")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetAllFull(BasePaginationRequestModel model)
+        {
+
+
+            var data = _context.Documents
+                .Select(x => new
+                {
+                    x.DocumentType,
+                    DocumentTypeString = x.DocumentType.GetDisiplayDescription(),
+                    x.DocumnetKind,
+                    DocumentKindText = x.DocumnetKind.GetDisiplayDescription(),
+                    x.Id,
+                    x.Name,
+                    CompanyName = x.Company.Name,
+                    PersonName = x.Person.FirstName + " " + x.Person.LastName,
+                    ProductName = x.Product.Name,
+                    DocumentDate = x.DocumentDate.ToString("dd/MM/yyyy"),
+                    EndDate = x.ExpireDate.ToString("dd/MM/yyyy")
+                }).CreatePagination(model);
+            PageResponse.Data = data;
+            return PageResponse;
+        }
         [HttpPost("GetByObjectId")]
         public async Task<dynamic> GetByObjectId(DocumentGetByObjectId model)
         {

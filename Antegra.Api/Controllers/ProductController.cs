@@ -134,7 +134,16 @@ namespace Labote.Api.Controllers
             PageResponse.Data = data;
             return PageResponse;
         }
-        [HttpGet("getDetailById/{id}")]
+        [HttpPost("GetByParam")]
+        public async Task<dynamic> GetByParam(GetProductByParams model)
+        {
+            var data = _context.Products.Where(x => x.Name.Contains(model.Name) || x.CompanyName.Contains(model.CompanyName));
+            PageResponse.Data = data;
+
+            return PageResponse;
+        }
+
+            [HttpGet("getDetailById/{id}")]
         public async Task<dynamic> getDetailById(Guid id)
         {
             var data = _context.Products.Where(x => x.Id == id).Select(x => new

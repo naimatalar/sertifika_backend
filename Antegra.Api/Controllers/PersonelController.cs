@@ -38,7 +38,7 @@ namespace Labote.Api.Controllers
         {
             var md = new Core.Entities.Person
             {
-                
+
                 Description = model.Description,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -48,6 +48,39 @@ namespace Labote.Api.Controllers
             _context.Persons.Add(md);
             _context.SaveChanges();
             PageResponse.Data = md;
+            return PageResponse;
+        }
+
+        [HttpPost("Search")]
+        [AllowAnonymous]
+        public async Task<dynamic> Search(GetByName model)
+        {
+            var data = _context.Persons.Where(x => (x.FirstName+ " "+x.LastName).Contains(model.Name)).Select(x => new
+
+            {
+                x.Id,
+                x.Description,
+                x.Title,
+                x.LogoUrl,
+                Name= x.FirstName+" "+x.LastName,
+            }).CreatePagination(model);
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+        [HttpPost("GetAllMobil")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetAllMobil(BasePaginationRequestModel model)
+        {
+            var data = _context.Persons.Select(x => new
+            {
+                x.Id,
+                x.Description,
+                x.Title,
+                x.LogoUrl,
+                Name = x.FirstName + " " + x.LastName,
+              
+            }).CreatePagination(model);
+            PageResponse.Data = data;
             return PageResponse;
         }
 
@@ -110,10 +143,28 @@ namespace Labote.Api.Controllers
                 x.FirstName,
                 x.LastName,
                 x.Description,
-              x.Title,
+                x.Title,
                 Report = x.Documents.Where(x => x.DocumentType == Core.Constants.Enums.DocumentType.report).Count(),
                 Certifica = x.Documents.Where(x => x.DocumentType == Core.Constants.Enums.DocumentType.Certifica).Count(),
-               
+
+                x.Id,
+                x.LogoUrl,
+            });
+
+            PageResponse.Data = data.CreatePagination(model);
+            return PageResponse;
+        }
+
+        [HttpPost("GetAllByName")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetAllByName(GetByNameAndTitle model)
+        {
+            var data = _context.Persons.Where(x=>(x.FirstName+" "+x.LastName).Contains(model.Name)||x.Title.Contains(model.Title)).Select(x => new
+            {
+                x.FirstName,
+                x.LastName,
+                x.Description,
+                x.Title,
                 x.Id,
                 x.LogoUrl,
             });
@@ -129,7 +180,7 @@ namespace Labote.Api.Controllers
                 x.FirstName,
                 x.LastName,
                 x.Title,
-                
+
                 x.Description,
                 x.Id,
                 x.LogoUrl,
