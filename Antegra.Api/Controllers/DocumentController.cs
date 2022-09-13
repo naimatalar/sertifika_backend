@@ -103,6 +103,10 @@ namespace Labote.Api.Controllers
                     DocumentKindText = x.DocumnetKind.GetDisiplayDescription(),
                     x.Id,
                     x.Name,
+                    ClogoUrl=x.Company.LogoUrl,
+                    PerlogoUrl=x.Person.LogoUrl,
+                    PrlogoUrl=x.Product.LogoUrl,
+
                     CompanyName = x.Company.Name,
                     PersonName = x.Person.FirstName + " " + x.Person.LastName,
                     ProductName = x.Product.Name,
@@ -127,6 +131,9 @@ namespace Labote.Api.Controllers
                     DocumentKindText = x.DocumnetKind.GetDisiplayDescription(),
                     x.Id,
                     x.Name,
+                    ClogoUrl = x.Company.LogoUrl,
+                    PerlogoUrl = x.Person.LogoUrl,
+                    PrlogoUrl = x.Product.LogoUrl,
                     CompanyName = x.Company.Name,
                     PersonName = x.Person.FirstName + " " + x.Person.LastName,
                     ProductName = x.Product.Name,
@@ -255,7 +262,63 @@ namespace Labote.Api.Controllers
          
             return PageResponse;
         }
+        [HttpGet("GetByBarcodedMobil/{id}")]
+        [AllowAnonymous]
+        public async Task<dynamic> GetByBarcodedMobil(string id)
+        {
 
+            var data = _context.Documents.Where(x => x.DocumentNo == id).Select(x => new
+            {   IsDocument=true,
+                x.CompanyId,
+                x.PersonId,
+                x.ProductId,
+                x.Description,
+                DocumentDate = x.DocumentDate.ToString("dd/MM/yyyy"),
+                x.DocumentNo,
+                x.DocumentType,
+                x.DocumnetKind,
+                ExpireDate = x.ExpireDate.ToString("dd/MM/yyyy"),
+                x.Name,
+                DocumentFiles = x.DocumentFiles.Select(x => new {
+                    x.Url,
+                    Extension = Path.GetExtension(x.Url),
+                    Size = new FileInfo(_hostingEnvironment.ContentRootPath + "/wwwroot/Upload/" + x.Url).Length / 1024,
+                }),
+                Company = new
+                {
+                    x.Company.Address,
+                    x.Company.Description,
+                    x.Company.Email,
+                    x.Company.LogoUrl,
+                    x.Company.Name,
+                    x.Company.Phone,
+                    Id = x.CompanyId,
+                },
+                Product = new
+                {
+                    x.Product.Name,
+                    x.Product.Description,
+                    x.Product.CompanyName,
+                    x.Product.LogoUrl,
+                    Id = x.ProductId
+
+                },
+                Person = new
+                {
+                    x.Person.FirstName,
+                    x.Person.Description,
+                    x.Person.LastName,
+                    x.Person.LogoUrl,
+                    x.Person.Title,
+                    Id = x.PersonId
+                },
+                Statu = true,
+            }).FirstOrDefault();
+            PageResponse.Data = data;
+
+
+            return PageResponse;
+        }
 
         [HttpPost("UploadFile")]
         public async Task<dynamic> UploadFile(FileUploadControllerModel model)
