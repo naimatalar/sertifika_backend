@@ -9,5 +9,6 @@ namespace Labote.Api.BindingModel.RequestModel
         public string Description { get; set; }
         public string LogoUrl { get; set; }
         public string CompanyName { get; set; }
+        public string Barcode { get; set; }
     }
 }

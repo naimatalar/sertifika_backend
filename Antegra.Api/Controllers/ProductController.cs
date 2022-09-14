@@ -43,7 +43,7 @@ namespace Labote.Api.Controllers
                 CompanyName = model.CompanyName,
                 LogoUrl = model.LogoUrl,
                 Name = model.Name,
-
+                Barcode=model.Barcode,
             };
             _context.Products.Add(md);
             _context.SaveChanges();
@@ -94,7 +94,7 @@ namespace Labote.Api.Controllers
             dd.CompanyName = model.CompanyName;
             dd.LogoUrl = model.LogoUrl;
             dd.Name = model.Name;
-
+            dd.Barcode = model.Barcode;
             _context.Update(dd);
             _context.SaveChanges();
             PageResponse.Data = dd;
@@ -130,6 +130,7 @@ namespace Labote.Api.Controllers
                 x.Description,
                 x.Id,
                 x.LogoUrl,
+                x.Barcode
             }).FirstOrDefault();
             PageResponse.Data = data;
             return PageResponse;
@@ -154,7 +155,7 @@ namespace Labote.Api.Controllers
                 x.Description,
                 x.CompanyName,
                 x.LogoUrl,
-               
+               x.Barcode,
                 Name = x.Name,
             }).CreatePagination(model);
             PageResponse.Data = data;
@@ -186,6 +187,7 @@ namespace Labote.Api.Controllers
                 x.Description,
                 x.CompanyName,
                 x.Id,
+                x.Barcode,
                 Report = x.Documents.Where(y => y.DocumentType == Core.Constants.Enums.DocumentType.report).Select(y => new
                 {
                     y.Name,

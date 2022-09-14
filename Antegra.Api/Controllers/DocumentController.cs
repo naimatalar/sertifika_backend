@@ -269,50 +269,10 @@ namespace Labote.Api.Controllers
 
             var data = _context.Documents.Where(x => x.DocumentNo == id).Select(x => new
             {   IsDocument=true,
-                x.CompanyId,
-                x.PersonId,
-                x.ProductId,
-                x.Description,
-                DocumentDate = x.DocumentDate.ToString("dd/MM/yyyy"),
-                x.DocumentNo,
-                x.DocumentType,
-                x.DocumnetKind,
-                ExpireDate = x.ExpireDate.ToString("dd/MM/yyyy"),
-                x.Name,
-                DocumentFiles = x.DocumentFiles.Select(x => new {
-                    x.Url,
-                    Extension = Path.GetExtension(x.Url),
-                    Size = new FileInfo(_hostingEnvironment.ContentRootPath + "/wwwroot/Upload/" + x.Url).Length / 1024,
-                }),
-                Company = new
-                {
-                    x.Company.Address,
-                    x.Company.Description,
-                    x.Company.Email,
-                    x.Company.LogoUrl,
-                    x.Company.Name,
-                    x.Company.Phone,
-                    Id = x.CompanyId,
-                },
-                Product = new
-                {
-                    x.Product.Name,
-                    x.Product.Description,
-                    x.Product.CompanyName,
-                    x.Product.LogoUrl,
-                    Id = x.ProductId
+            x.Id,
 
-                },
-                Person = new
-                {
-                    x.Person.FirstName,
-                    x.Person.Description,
-                    x.Person.LastName,
-                    x.Person.LogoUrl,
-                    x.Person.Title,
-                    Id = x.PersonId
-                },
-                Statu = true,
+                x.DocumnetKind,
+
             }).FirstOrDefault();
             PageResponse.Data = data;
 
