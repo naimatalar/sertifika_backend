@@ -79,7 +79,7 @@ namespace Labote.Api.Controllers
         [HttpGet("Delete/{id}")]
         public async Task<dynamic> delete(Guid Id)
         {
-            var data = _context.Documents.Include(x=>x.DocumentFiles).Where(x => x.Id == Id).FirstOrDefault();
+            var data = _context.Documents.Include(x => x.DocumentFiles).Where(x => x.Id == Id).FirstOrDefault();
             foreach (var item in data.DocumentFiles)
             {
                 FileUploadService.Delete(item.Url, _hostingEnvironment);
@@ -94,7 +94,7 @@ namespace Labote.Api.Controllers
         {
 
 
-            var data = _context.Documents.Where(x => x.DocumentDate > model.StartDate && x.DocumentDate < model.EndDate)
+            var data = _context.Documents
                 .Select(x => new
                 {
                     x.DocumentType,
@@ -103,17 +103,51 @@ namespace Labote.Api.Controllers
                     DocumentKindText = x.DocumnetKind.GetDisiplayDescription(),
                     x.Id,
                     x.Name,
-                    ClogoUrl=x.Company.LogoUrl,
-                    PerlogoUrl=x.Person.LogoUrl,
-                    PrlogoUrl=x.Product.LogoUrl,
-
+                    ClogoUrl = x.Company.LogoUrl,
+                    PerlogoUrl = x.Person.LogoUrl,
+                    PrlogoUrl = x.Product.LogoUrl,
+                    x.DocumentNo,
                     CompanyName = x.Company.Name,
                     PersonName = x.Person.FirstName + " " + x.Person.LastName,
                     ProductName = x.Product.Name,
                     DocumentDate = x.DocumentDate.ToString("dd/MM/yyyy"),
-                    EndDate = x.ExpireDate.ToString("dd/MM/yyyy")
-                }).CreatePagination(model);
-            PageResponse.Data = data;
+                    EndDate = x.ExpireDate.ToString("dd/MM/yyyy"),
+                    DocumentDatex = x.DocumentDate,
+                    EndDatex = x.ExpireDate
+                });
+
+            if (model.StartDate != null)
+            {
+                data = data.Where(x => x.DocumentDatex > model.StartDate && x.DocumentDatex < model.EndDate);
+            }
+            if (!string.IsNullOrEmpty(model.DocumentNo))
+            {
+                data = data.Where(x => x.DocumentNo == model.DocumentNo);
+            }
+            if (model.IsCertificate == true)
+            {
+                data = data.Where(x => x.DocumentType == Enums.DocumentType.Certifica);
+            }
+            if (model.IsReport == true)
+            {
+                data = data.Where(x => x.DocumentType == Enums.DocumentType.report);
+            }
+            if (!string.IsNullOrEmpty(model.Name))
+            {
+                data = data.Where(x => x.DocumentNo == model.Name);
+            }
+            if (model.DocumentKind != null)
+            {
+                data = data.Where(x => x.DocumnetKind ==
+                (Enums.DocumnetKind)model.DocumentKind &&
+                x.CompanyName.Contains(model.DocumentBelongName) ||
+                x.PersonName.Contains(model.DocumentBelongName) ||
+                x.ProductName.Contains(model.DocumentBelongName)
+                );
+            }
+
+
+            PageResponse.Data = data.CreatePagination(model);
             return PageResponse;
         }
         [HttpPost("GetAllFull")]
@@ -203,63 +237,64 @@ namespace Labote.Api.Controllers
             return PageResponse;
         }
 
-    
+
 
         [HttpGet("GetByObjectIdMobil/{id}")]
         [AllowAnonymous]
         public async Task<dynamic> GetByObjectIdMobil(Guid id)
         {
-            
-                var data = _context.Documents.Where(x => x.Id == id).Select(x => new
-                {
-                    x.CompanyId,
-                    x.PersonId,
-                    x.ProductId,
-                    x.Description,
-                    DocumentDate=x.DocumentDate.ToString("dd/MM/yyyy"),
-                    x.DocumentNo,
-                    x.DocumentType,
-                    x.DocumnetKind,
-                    ExpireDate=x.ExpireDate.ToString("dd/MM/yyyy"),
-                    x.Name,
-                    DocumentFiles=x.DocumentFiles.Select(x=>new { 
-                    x.Url,
-                    Extension= Path.GetExtension(x.Url),
-                    Size= new FileInfo(_hostingEnvironment.ContentRootPath + "/wwwroot/Upload/" + x.Url).Length/1024,
-                    }),
-                    Company = new
-                    {
-                        x.Company.Address,
-                        x.Company.Description,
-                        x.Company.Email,
-                        x.Company.LogoUrl,
-                        x.Company.Name,
-                        x.Company.Phone,
-                        Id=x.CompanyId,
-                    },
-                    Product = new
-                    {
-                        x.Product.Name,
-                        x.Product.Description,
-                        x.Product.CompanyName,
-                        x.Product.LogoUrl,
-                        Id=x.ProductId
 
-                    },
-                    Person = new
-                    {
-                        x.Person.FirstName,
-                        x.Person.Description,
-                        x.Person.LastName,
-                        x.Person.LogoUrl,
-                        x.Person.Title,
-                        Id=x.PersonId
-                    },
-                    Statu = true,
-                }).FirstOrDefault();
-                PageResponse.Data = data;
-            
-         
+            var data = _context.Documents.Where(x => x.Id == id).Select(x => new
+            {
+                x.CompanyId,
+                x.PersonId,
+                x.ProductId,
+                x.Description,
+                DocumentDate = x.DocumentDate.ToString("dd/MM/yyyy"),
+                x.DocumentNo,
+                x.DocumentType,
+                x.DocumnetKind,
+                ExpireDate = x.ExpireDate.ToString("dd/MM/yyyy"),
+                x.Name,
+                DocumentFiles = x.DocumentFiles.Select(x => new
+                {
+                    x.Url,
+                    Extension = Path.GetExtension(x.Url),
+                    Size = new FileInfo(_hostingEnvironment.ContentRootPath + "/wwwroot/Upload/" + x.Url).Length / 1024,
+                }),
+                Company = new
+                {
+                    x.Company.Address,
+                    x.Company.Description,
+                    x.Company.Email,
+                    x.Company.LogoUrl,
+                    x.Company.Name,
+                    x.Company.Phone,
+                    Id = x.CompanyId,
+                },
+                Product = new
+                {
+                    x.Product.Name,
+                    x.Product.Description,
+                    x.Product.CompanyName,
+                    x.Product.LogoUrl,
+                    Id = x.ProductId
+
+                },
+                Person = new
+                {
+                    x.Person.FirstName,
+                    x.Person.Description,
+                    x.Person.LastName,
+                    x.Person.LogoUrl,
+                    x.Person.Title,
+                    Id = x.PersonId
+                },
+                Statu = true,
+            }).FirstOrDefault();
+            PageResponse.Data = data;
+
+
             return PageResponse;
         }
         [HttpGet("GetByBarcodedMobil/{id}")]
@@ -268,8 +303,9 @@ namespace Labote.Api.Controllers
         {
 
             var data = _context.Documents.Where(x => x.DocumentNo == id).Select(x => new
-            {   IsDocument=true,
-            x.Id,
+            {
+                IsDocument = true,
+                x.Id,
 
                 x.DocumnetKind,
 
