@@ -1,5 +1,6 @@
 ﻿using Labote.Core.BindingModels;
 using System;
+using System.Collections.Generic;
 
 namespace Labote.Api.BindingModel.RequestModel
 {
@@ -12,7 +13,7 @@ namespace Labote.Api.BindingModel.RequestModel
         public bool? IsReport { get; set; } = null;
         public string Name { get; set; } = null;
 
-        public int? DocumentKind { get; set; } = null;
+        public List<string> DocumentKind { get; set; } = new List<string>();
         public string DocumentBelongName { get; set; } = null;
     }
 }
