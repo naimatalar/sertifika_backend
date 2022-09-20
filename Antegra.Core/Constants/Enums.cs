@@ -41,6 +41,17 @@ namespace Labote.Core.Constants
             Certifica = 2,
        
         }
+
+        public enum DocumentApplicationMeetStatus
+        {
+            [Display(Description = "Görüşülmedi")]
+            NotMeet = 1,
+            [Display(Description = "Olumlu")]
+            Positive = 2,
+            [Display(Description = "Olumsuz")]
+            Nagative = 2,
+
+        }
         public enum CertificaType
         {
             [Display(Description = "Kişi")]

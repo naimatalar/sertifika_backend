@@ -36,9 +36,10 @@ namespace Labote.Core
         public DbSet<Person> Persons { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<DocumentAppilication> DocumentAppilications { get; set; }
 
-      
-   
+
+
 
 
 

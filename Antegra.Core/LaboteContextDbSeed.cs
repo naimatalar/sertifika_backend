@@ -314,7 +314,25 @@ namespace Labote.Core
                 }
             }
 
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Başvurular"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Başvurular",
+                            PageUrl = "basvurular",
+                            ParentId = Tanimlamalar.Id,
+                            OrderNumber = 4,
+                        });
+                    }
 
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
             #endregion
 
 
