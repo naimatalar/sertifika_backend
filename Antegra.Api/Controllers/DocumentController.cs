@@ -101,6 +101,7 @@ namespace Labote.Api.Controllers
                     DocumentTypeString = x.DocumentType.GetDisiplayDescription(),
                     x.DocumnetKind,
                     DocumentKindText = x.DocumnetKind.GetDisiplayDescription(),
+                   
                     x.Id,
                     x.Name,
                     ClogoUrl = x.Company.LogoUrl,
@@ -124,30 +125,36 @@ namespace Labote.Api.Controllers
             {
                 data = data.Where(x => x.DocumentNo == model.DocumentNo);
             }
-            if (model.IsCertificate == true)
-            {
-                data = data.Where(x => x.DocumentType == Enums.DocumentType.Certifica);
-            }
-            if (model.IsReport == true)
-            {
-                data = data.Where(x => x.DocumentType == Enums.DocumentType.report);
-            }
+            data = data.Where(x => (model.IsCertificate == true && x.DocumentType == Enums.DocumentType.Certifica) || (model.IsReport == true && x.DocumentType == Enums.DocumentType.report));
+
+        
+            data = data.Where(x => (model.DocumentKind.Any(x => x == "Person") && x.DocumnetKind == Enums.DocumnetKind.Person) || (model.DocumentKind.Any(x => x == "Product") && x.DocumnetKind == Enums.DocumnetKind.Product)|| (model.DocumentKind.Any(x => x == "Company") && x.DocumnetKind == Enums.DocumnetKind.Company));
+
+    
+            
             if (!string.IsNullOrEmpty(model.Name))
             {
-                data = data.Where(x => x.DocumentNo == model.Name);
+                data = data.Where(x => x.Name.Contains(model.Name));
             }
-            if (model.DocumentKind != null)
+
+            if (model.DocumentBelongName != null)
             {
-                data = data.Where(x => x.DocumnetKind ==
-                (Enums.DocumnetKind)model.DocumentKind &&
-                x.CompanyName.Contains(model.DocumentBelongName) ||
+                data = data.Where(x =>  x.CompanyName.Contains(model.DocumentBelongName) ||
                 x.PersonName.Contains(model.DocumentBelongName) ||
                 x.ProductName.Contains(model.DocumentBelongName)
                 );
             }
 
-
+            try
+            {
             PageResponse.Data = data.CreatePagination(model);
+
+            }
+            catch (Exception e)
+            {
+
+             
+            }
             return PageResponse;
         }
         [HttpPost("GetAllFull")]
