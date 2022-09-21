@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,10 +26,13 @@ namespace Labote.Api.Controllers
         [HttpPost("GetAll")]
         public async Task<ActionResult<dynamic>> GetAll(BasePaginationRequestModel model)
         {
-            var data = _context.DocumentAppilications.Select(x=>new { 
-            x.FullName,
-            x.Mail,
-            x.Phone,
+            var data = _context.DocumentAppilications.Select(x => new
+            {
+                x.Id,
+                x.FullName,
+                x.Mail,
+                x.Phone,
+                Status = (int)x.DocumentApplicationMeetStatus
             }).CreatePagination(model);
             PageResponse.Data = data;
             return PageResponse;
@@ -40,10 +44,10 @@ namespace Labote.Api.Controllers
         {
             _context.DocumentAppilications.Add(new Core.Entities.DocumentAppilication
             {
-                DocumentId=model.DocumentId,
+                DocumentId = model.DocumentId,
                 FullName = model.FullName,
-                Mail=model.Mail,
-                Phone=model.Phone,
+                Mail = model.Mail,
+                Phone = model.Phone,
             });
             _context.SaveChanges();
             return PageResponse;
@@ -56,13 +60,39 @@ namespace Labote.Api.Controllers
 
             data.Interviewer = model.Interviewer;
             data.Notes = model.Notes;
-            data.DocumentApplicationMeetStatus = (Core.Constants.Enums.DocumentApplicationMeetStatus)data.DocumentApplicationMeetStatus;
+            data.DocumentApplicationMeetStatus = (Core.Constants.Enums.DocumentApplicationMeetStatus)model.Status;
 
             _context.Update(data);
             _context.SaveChanges();
             return PageResponse;
         }
 
+        [HttpGet("GetById/{Id}")]
+        public async Task<ActionResult<dynamic>> GetById(Guid Id)
+        {
+            var data = _context.DocumentAppilications.Select(x => new
+            {
+                x.Id,
+                x.FullName,
+                x.Mail,
+                x.Phone,
+                Status = (int)x.DocumentApplicationMeetStatus,
+                DocumentId= x.Document.Id,
+                x.Interviewer,
+                DocumentName=x.Document.Name,
+                x.Document.DocumentNo,
+                DocumentDescription=x.Document.Description,
+                DocumentFiles=x.Document.DocumentFiles.Select(y=>new {
+                    y.Name,
+                    y.Url,
+                    Extension = Path.GetExtension(y.Url),
+                }),
+                x.Notes
+                
+            }).FirstOrDefault(x => x.Id==Id);
+            PageResponse.Data = data;
+            return PageResponse;
+        }
 
     }
 }

@@ -11,7 +11,7 @@ namespace Labote.Core.BindingModels
         public Guid Id { get; set; }
         public string Interviewer { get; set; }
 
-        public int DocumentApplicationMeetStatus { get; set; }
+        public int Status { get; set; }
 
         public string Notes { get; set; }
     }

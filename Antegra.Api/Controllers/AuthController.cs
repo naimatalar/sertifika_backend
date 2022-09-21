@@ -73,7 +73,7 @@ namespace Labote.Api.Controllers
                     var token = new JwtSecurityToken(
                     //  issuer: _configuration[“JWT: ValidIssuer”],
                     //audience: _configuration[“JWT: ValidAudience”],
-                    
+
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
@@ -109,11 +109,21 @@ namespace Labote.Api.Controllers
 
                     UserExist = false,
                     Auth = false,
-                    PhoneConfirmed=false
+                    PhoneConfirmed = false
                 });
 
             }
-            var userId = User.Identity.UserId();
+            var userId = User.Identity?.UserId();
+            if (userId == null)
+            {
+                return Ok(new
+                {
+
+                    UserExist = false,
+                    Auth = false,
+                    PhoneConfirmed = false
+                });
+            }
             var userExist = _userManager.Users.Where(x => x.Id == userId).FirstOrDefault();
 
             if (userExist == null)
@@ -161,7 +171,7 @@ namespace Labote.Api.Controllers
             {
                 if (ModelState.IsValid)
                 {
-          
+
 
 
                     using (LaboteContext context = new LaboteContext())
@@ -195,7 +205,7 @@ namespace Labote.Api.Controllers
                         using (var transaction = context.Database.BeginTransaction())
                         {
                             var data = context.MenuModules.ToList();
-                            
+
 
                             foreach (var item in data)
                             {

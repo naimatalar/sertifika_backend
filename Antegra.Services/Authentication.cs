@@ -10,10 +10,15 @@ namespace Labote.Services
 {
     public static class Authentication
     {
-        public static Guid UserId(this IIdentity Identity)
+        public static Guid? UserId(this IIdentity Identity)
         {
             ClaimsIdentity claimsIdentity = Identity as ClaimsIdentity;
             Claim claim = claimsIdentity?.FindFirst("userId");
+
+            if (claim?.Value==null)
+            {
+                return null;
+            }
 
             return Guid.Parse(claim?.Value);
         }
