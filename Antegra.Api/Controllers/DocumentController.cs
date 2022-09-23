@@ -253,6 +253,7 @@ namespace Labote.Api.Controllers
 
             var data = _context.Documents.Where(x => x.Id == id).Select(x => new
             {
+                x.Id,
                 x.CompanyId,
                 x.PersonId,
                 x.ProductId,
