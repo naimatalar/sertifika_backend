@@ -24,7 +24,7 @@ namespace Labote.Api.Controllers
         }
 
         [HttpPost("GetAll")]
-        public async Task<ActionResult<dynamic>> GetAll(BasePaginationRequestModel model)
+        public async Task<ActionResult<dynamic>> GetAll(DocumentApplicationSearchModel model)
         {
             var data = _context.DocumentAppilications.Select(x => new
             {
@@ -33,7 +33,12 @@ namespace Labote.Api.Controllers
                 x.Mail,
                 x.Phone,
                 Status = (int)x.DocumentApplicationMeetStatus
-            }).CreatePagination(model);
+            });
+            if (!string.IsNullOrEmpty(model.Name))
+            {
+                data = data.Where(x => x.FullName.Contains(model.Name));
+            }
+               data= data.CreatePagination(model);
             PageResponse.Data = data;
             return PageResponse;
         }

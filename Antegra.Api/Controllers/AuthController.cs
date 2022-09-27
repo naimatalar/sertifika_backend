@@ -159,7 +159,29 @@ namespace Labote.Api.Controllers
             return Unauthorized();
         }
 
-
+  
+        [HttpGet("TokenCheck")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> TokenCheck()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId=User.Identity.UserId();
+                if (userId!=null)
+                {
+                   var data= _context.Users.Where(x => x.Id == userId).Select(x => new {
+                    x.FirstName,
+                    x.Lastname,
+                    x.Email,
+                    
+                    });
+                    return Ok(data);
+                }
+                
+            }
+           return Unauthorized();
+            
+        }
 
 
         [AllowAnonymous]
