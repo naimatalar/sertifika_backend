@@ -24,7 +24,7 @@ namespace Labote.Api.Controllers
         }
 
         [HttpPost("GetAll")]
-        public async Task<ActionResult<dynamic>> GetAll(DocumentApplicationSearchModel model)
+        public async Task<ActionResult<dynamic>> GetAll(BasePaginationRequestModel model)
         {
             var data = _context.DocumentAppilications.Select(x => new
             {
@@ -34,12 +34,40 @@ namespace Labote.Api.Controllers
                 x.Phone,
                 Status = (int)x.DocumentApplicationMeetStatus
             });
+            
+              
+            PageResponse.Data = data.CreatePagination(model); ;
+            return PageResponse;
+        }
+        [HttpPost("GetAllMobil")]
+        public async Task<ActionResult<dynamic>> GetAllMobil(DocumentApplicationSearchModel model)
+        {
+            var data = _context.DocumentAppilications.Select(x => new
+            {
+                x.Id,
+                x.FullName,
+                x.Mail,
+                x.Phone,
+                Status = (int)x.DocumentApplicationMeetStatus,
+                x.CreateDate
+            });
+            
             if (!string.IsNullOrEmpty(model.Name))
             {
                 data = data.Where(x => x.FullName.Contains(model.Name));
             }
-               data= data.CreatePagination(model);
-            PageResponse.Data = data;
+            try
+            {
+                PageResponse.Data= data.OrderByDescending(x=>x.CreateDate).CreatePagination(model);
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+
+            
             return PageResponse;
         }
 
@@ -66,7 +94,7 @@ namespace Labote.Api.Controllers
             data.Interviewer = model.Interviewer;
             data.Notes = model.Notes;
             data.DocumentApplicationMeetStatus = (Core.Constants.Enums.DocumentApplicationMeetStatus)model.Status;
-
+            data.NagativeMeetStatus = model.NegaticeStatus==null?null:(Core.Constants.Enums.NagativeMeetStatus)model.NegaticeStatus;
             _context.Update(data);
             _context.SaveChanges();
             return PageResponse;

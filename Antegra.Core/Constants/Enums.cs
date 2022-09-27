@@ -49,9 +49,22 @@ namespace Labote.Core.Constants
             [Display(Description = "Olumlu")]
             Positive = 2,
             [Display(Description = "Olumsuz")]
-            Nagative = 2,
+            Nagative = 3,
+        }
+        public enum NagativeMeetStatus
+        {
+            [Display(Description = "Telefon Numarası Hatalı")]
+            BadInfo = 1,
+            [Display(Description = "Ulaşılamadı")]
+            CaanotContact = 2,
+            [Display(Description = "Konuşmayı Reddetti")]
+            RejectContact = 3,
 
         }
+
+
+
+
         public enum CertificaType
         {
             [Display(Description = "Kişi")]

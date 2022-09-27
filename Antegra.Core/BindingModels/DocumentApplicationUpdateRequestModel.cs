@@ -12,6 +12,7 @@ namespace Labote.Core.BindingModels
         public string Interviewer { get; set; }
 
         public int Status { get; set; }
+        public int? NegaticeStatus { get; set; }
 
         public string Notes { get; set; }
     }
