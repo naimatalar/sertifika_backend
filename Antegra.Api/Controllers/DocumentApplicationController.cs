@@ -81,6 +81,7 @@ namespace Labote.Api.Controllers
                 FullName = model.FullName,
                 Mail = model.Mail,
                 Phone = model.Phone,
+                IsMobil=(bool)model.IsMobil
             });
             _context.SaveChanges();
             return PageResponse;
@@ -116,6 +117,7 @@ namespace Labote.Api.Controllers
                 x.Document.DocumentNo,
                 NegaticeStatus = x.NagativeMeetStatus,
                 DocumentDescription=x.Document.Description,
+                x.IsMobil,
                 DocumentFiles=x.Document.DocumentFiles.Select(y=>new {
                     y.Name,
                     y.Url,

@@ -19,6 +19,7 @@ namespace Labote.Core.Entities
         public NagativeMeetStatus? NagativeMeetStatus { get; set; } = null;
         public DocumentApplicationMeetStatus DocumentApplicationMeetStatus { get; set; } = DocumentApplicationMeetStatus.NotMeet;
         public string Notes { get; set; }
+        public bool IsMobil { get; set; } = true;
 
     }
 }

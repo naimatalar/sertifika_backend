@@ -13,5 +13,6 @@ namespace Labote.Core.BindingModels
         public string Mail { get; set; }
         public string Posta { get; set; }
         public string Phone { get; set; }
+        public bool? IsMobil { get; set; } = true;
     }
 }
