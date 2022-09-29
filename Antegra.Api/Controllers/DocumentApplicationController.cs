@@ -114,6 +114,7 @@ namespace Labote.Api.Controllers
                 x.Interviewer,
                 DocumentName=x.Document.Name,
                 x.Document.DocumentNo,
+                NegaticeStatus = x.NagativeMeetStatus,
                 DocumentDescription=x.Document.Description,
                 DocumentFiles=x.Document.DocumentFiles.Select(y=>new {
                     y.Name,
