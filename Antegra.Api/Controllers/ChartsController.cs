@@ -75,7 +75,7 @@ namespace Labote.Api.Controllers
 
             var notMeet = data.Where(x => x.DocumentApplicationMeetStatus == Core.Constants.Enums.DocumentApplicationMeetStatus.NotMeet).Count(); ;
             var negative = data.Where(x => x.DocumentApplicationMeetStatus == Core.Constants.Enums.DocumentApplicationMeetStatus.Nagative).Count(); ;
-            var positive = data.Where(x => x.DocumentApplicationMeetStatus == Core.Constants.Enums.DocumentApplicationMeetStatus.Nagative).Count(); ;
+            var positive = data.Where(x => x.DocumentApplicationMeetStatus == Core.Constants.Enums.DocumentApplicationMeetStatus.Positive).Count(); ;
             var dda = new List<int>() { notMeet, negative, positive };
             var bbs = new List<string>() { "#ff980096", "#f443369e", "#0b7210a1" };
             var lbls = new List<string>() { "Görüşülmedi", "Olumsuz", "Olumlu" };
