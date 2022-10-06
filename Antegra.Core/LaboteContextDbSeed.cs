@@ -60,7 +60,7 @@ namespace Labote.Core
                                 Lastname = "Kullanici",
                                 EmailConfirmed = true,
                                 NotDelete = true,
-                                
+                                      
                             };
                             var usr = _userManager.CreateAsync(user, "Tg71!nG*").Result;
                         }
@@ -81,11 +81,8 @@ namespace Labote.Core
                                 }
                                 ).Result;
                             var RoleAdd = _userManager.AddToRoleAsync(user, Enums.Admin).Result;
-
                         }
-
                         transaction.Commit();
-
                     };
 
                 }
